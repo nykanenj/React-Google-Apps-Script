@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import FormInput from './FormInput';
-import SheetButton from './SheetButton';
+import { Button, ListGroup } from 'react-bootstrap';
+import FormInput from './FormInput.tsx';
 
 // This is a wrapper for google.script.run that lets us use promises.
 import server from '../../utils/server';
@@ -12,7 +12,6 @@ const SheetEditor = () => {
   const [names, setNames] = useState([]);
 
   useEffect(() => {
-    // Call a server global function here and handle the response with .then() and .catch()
     serverFunctions
       .getSheetsData()
       .then(setNames)
@@ -33,8 +32,6 @@ const SheetEditor = () => {
       .catch(alert);
   };
 
-  // You can also use async/await notation for server calls with our server wrapper.
-  // (This does the same thing as .then().catch() in the above handlers.)
   const submitNewSheet = async newSheetName => {
     try {
       const response = await serverFunctions.addSheet(newSheetName);
@@ -45,17 +42,9 @@ const SheetEditor = () => {
     }
   };
 
-  return (
-    <div>
-      <p>
-        <b>☀️ React demo! ☀️</b>
-      </p>
-      <p>
-        This is a sample page that demonstrates a simple React app. Enter a name
-        for a new sheet, hit enter and the new sheet will be created. Click the
-        red &times; next to the sheet name to delete it.
-      </p>
-      <FormInput submitNewSheet={submitNewSheet} />
+  return (<div>
+    <FormInput submitNewSheet={submitNewSheet} />
+    <ListGroup>
       <TransitionGroup className="sheet-list">
         {names.length > 0 &&
           names.map(name => (
@@ -64,14 +53,30 @@ const SheetEditor = () => {
               timeout={500}
               key={name.name}
             >
-              <SheetButton
-                sheetDetails={name}
-                deleteSheet={deleteSheet}
-                setActiveSheet={setActiveSheet}
-              />
+              <ListGroup.Item
+                className="d-flex"
+                key={`${name.index}-${name.name}`}
+              >
+                <Button
+                  className="border-0"
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => deleteSheet(name.index)}
+                >
+                  &times;
+                </Button>
+                <Button
+                  className="border-0 mx-2"
+                  variant={name.isActive ? 'success' : 'outline-success'}
+                  onClick={() => setActiveSheet(name.name)}
+                >
+                  {name.name}
+                </Button>
+              </ListGroup.Item>
             </CSSTransition>
           ))}
       </TransitionGroup>
+    </ListGroup>
     </div>
   );
 };

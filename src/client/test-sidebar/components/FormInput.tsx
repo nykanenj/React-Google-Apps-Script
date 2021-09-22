@@ -37,12 +37,12 @@ const FormInput = ({ submitNewSheet }: FormInputProps) => {
               onChange={handleChange}
             />
           </Col>
-          <Col xs={2}>
+        </Row>
+        <Row xs={2}>
             <Button variant="primary" type="submit">
               Submit
             </Button>
-          </Col>
-        </Row>
+          </Row>
         <Form.Text className="text-muted">
           Enter the name for your new sheet.
         </Form.Text>
